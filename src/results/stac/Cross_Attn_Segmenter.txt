@@ -1,0 +1,61 @@
+--- Run: dataset=cloudsen12_l2a split_ratio=(0.85, 0.05, 0.1) scene_split=True seed=42 run_name=stac ---
+[STAC-group split (nearly patch-wise in this packaging)]
+  total records (patches) = 10000
+  unique scenes = 9835  (min/median/max patches per scene: 1/1/4)
+  train: 8359 scenes, 8496 patches
+  val:   491 scenes, 504 patches
+  test:  985 scenes, 1000 patches
+  No scene overlap across splits: True
+  Split saved to: /a/bear.cs.fiu.edu./disk/bear-b/users/mmazi007/Desktop/Source Code (Research)/Atmospheric Correction Impact on Cloud Detectibility/outputs/splits/cloudsen12_scene_split_s42_r0.85_0.05_0.10.json
+  (STAC-group split is nearly patch-wise in this packaging; each record is the independent evaluation unit.)
+
+--- Run: dataset=cloudsen12_l1c split_ratio=(0.85, 0.05, 0.1) scene_split=True seed=42 run_name=stac ---
+[STAC-group split (nearly patch-wise in this packaging)]
+  total records (patches) = 10000
+  unique scenes = 9835  (min/median/max patches per scene: 1/1/4)
+  train: 8359 scenes, 8496 patches
+  val:   491 scenes, 504 patches
+  test:  985 scenes, 1000 patches
+  No scene overlap across splits: True
+  Split saved to: /a/bear.cs.fiu.edu./disk/bear-b/users/mmazi007/Desktop/Source Code (Research)/Atmospheric Correction Impact on Cloud Detectibility/outputs/splits/cloudsen12_scene_split_s42_r0.85_0.05_0.10.json
+  (STAC-group split is nearly patch-wise in this packaging; each record is the independent evaluation unit.)
+
+Evaluation of ms_cloudcam_1xdeepcross_attn_cloudsen12_l1c_best_val Model:
+  Class 0: IoU=0.8918, F1=0.9428
+  Class 1: IoU=0.8504, F1=0.9191
+  Class 2: IoU=0.5654, F1=0.7224
+  Class 3: IoU=0.6395, F1=0.7801
+  Mean IoU: 0.7368
+  Mean F1: 0.8411
+
+
+ms_cloudcam_1xdeepcross_attn_cloudsen12_l1c_best_val — scene-level:
+[Scene-level evaluation (test)]
+  Global mean IoU (patch-based): 0.7368
+  Per-scene mean IoU: 0.7222 (n_scenes=985)
+  Bootstrap 95% CI (per-scene mean IoU): [0.7084, 0.7354] (B=1000)
+
+  Class 0 global IoU: 0.8918
+  Class 1 global IoU: 0.8504
+  Class 2 global IoU: 0.5654
+  Class 3 global IoU: 0.6395
+
+Evaluation of ms_cloudcam_1xdeepcross_attn_cloudsen12_l2a_best_val Model:
+  Class 0: IoU=0.8982, F1=0.9464
+  Class 1: IoU=0.8515, F1=0.9198
+  Class 2: IoU=0.5508, F1=0.7104
+  Class 3: IoU=0.6507, F1=0.7884
+  Mean IoU: 0.7378
+  Mean F1: 0.8412
+
+
+ms_cloudcam_1xdeepcross_attn_cloudsen12_l2a_best_val — scene-level:
+[Scene-level evaluation (test)]
+  Global mean IoU (patch-based): 0.7378
+  Per-scene mean IoU: 0.7217 (n_scenes=985)
+  Bootstrap 95% CI (per-scene mean IoU): [0.7090, 0.7345] (B=1000)
+
+  Class 0 global IoU: 0.8982
+  Class 1 global IoU: 0.8515
+  Class 2 global IoU: 0.5508
+  Class 3 global IoU: 0.6507

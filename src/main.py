@@ -23,11 +23,11 @@ def parse_split_ratio(s):
     return tuple(parts)
 
 
-def main(epochs, gpu_id, dataset_name, split_ratio, scene_split, seed):
+def main(epochs, gpu_id, dataset_name, split_ratio, scene_split, seed, run_name=""):
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
     seed_everything(seed)
 
-    results_dir = os.path.join("src", "results")
+    results_dir = os.path.join("src", "results", run_name) if run_name else os.path.join("src", "results")
     os.makedirs(results_dir, exist_ok=True)
 
     model_base_name = f"ms_cloudcam_1xdeepcross_attn_{dataset_name.lower()}"
@@ -38,7 +38,7 @@ def main(epochs, gpu_id, dataset_name, split_ratio, scene_split, seed):
     with open(log_path, "a") as log_file:
         log_file.write(
             f"\n--- Run: dataset={dataset_name} split_ratio={split_ratio} "
-            f"scene_split={scene_split} seed={seed} ---\n"
+            f"scene_split={scene_split} seed={seed} run_name={run_name or 'default'} ---\n"
         )
 
         if dataset_name.lower() == "cloudsen12_l1c":
@@ -134,6 +134,7 @@ if __name__ == "__main__":
         help="Use index-based split instead of scene-level split (not recommended).",
     )
     parser.add_argument("--seed", type=int, default=42, help="Random seed for split and training.")
+    parser.add_argument("--run-name", type=str, default="", help="Subdir under src/results/ and for metrics/stats (e.g. stac, index).")
     args = parser.parse_args()
 
     split_ratio = parse_split_ratio(args.split_ratio)
@@ -144,4 +145,5 @@ if __name__ == "__main__":
         split_ratio=split_ratio,
         scene_split=not args.no_scene_split,
         seed=args.seed,
+        run_name=args.run_name.strip(),
     )

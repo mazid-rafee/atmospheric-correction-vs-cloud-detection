@@ -75,8 +75,17 @@ def main():
     parser.add_argument("--l1c-csv", default=CSV_L1C)
     parser.add_argument("--l2a-csv", default=CSV_L2A)
     parser.add_argument("--out", default=OUT_JSON)
+    parser.add_argument("--run-name", type=str, default="", help="Read metrics from outputs/metrics/<run_name>/ and write outputs/stats/paired_bootstrap_ci_<run_name>.json")
     parser.add_argument("--per-scene", action="store_true", help="Also run bootstrap over scenes (sample scene IDs)")
     args = parser.parse_args()
+
+    if args.run_name:
+        run_name = args.run_name.strip()
+        metrics_dir = os.path.join(PROJECT_ROOT, "outputs", "metrics", run_name)
+        stats_dir = os.path.join(PROJECT_ROOT, "outputs", "stats")
+        args.l1c_csv = os.path.join(metrics_dir, "per_record_iou_l1c.csv")
+        args.l2a_csv = os.path.join(metrics_dir, "per_record_iou_l2a.csv")
+        args.out = os.path.join(stats_dir, f"paired_bootstrap_ci_{run_name}.json")
 
     if not os.path.isfile(args.l1c_csv) or not os.path.isfile(args.l2a_csv):
         print(f"Run compute_per_record_iou.py first to create {args.l1c_csv} and {args.l2a_csv}")
@@ -89,7 +98,9 @@ def main():
     df_l2a = df_l2a.set_index("record_idx").loc[common].reset_index()
     assert len(df_l1c) == len(df_l2a)
     n_records = len(df_l1c)
+    raw_delta = (df_l2a["miou"].astype(float) - df_l1c["miou"].astype(float)).mean()
     print(f"Aligned by record_idx: {n_records} test records")
+    print(f"DEBUG raw mean delta (L2A − L1C): {raw_delta}")
     print("Paired bootstrap over records (L2A − L1C):")
     print()
 

@@ -99,6 +99,8 @@ def main():
     parser.add_argument("--gpu", type=int, default=0)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--split-ratio", type=str, default="0.85,0.05,0.1")
+    parser.add_argument("--no-scene-split", action="store_true", help="Use index-based split (must match training if you used --no-scene-split there)")
+    parser.add_argument("--run-name", type=str, default="", help="Subdir for checkpoints and metrics (must match training --run-name).")
     args = parser.parse_args()
 
     def parse_ratio(s):
@@ -107,11 +109,12 @@ def main():
         return tuple(p)
 
     split_ratio = parse_ratio(args.split_ratio)
+    run_name = (args.run_name or "").strip()
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     selected_bands = list(range(1, 14))
-    results_dir = os.path.join(PROJECT_ROOT, "src", "results")
-    metrics_dir = os.path.join(PROJECT_ROOT, "outputs", "metrics")
+    results_dir = os.path.join(PROJECT_ROOT, "src", "results", run_name) if run_name else os.path.join(PROJECT_ROOT, "src", "results")
+    metrics_dir = os.path.join(PROJECT_ROOT, "outputs", "metrics", run_name) if run_name else os.path.join(PROJECT_ROOT, "outputs", "metrics")
     os.makedirs(metrics_dir, exist_ok=True)
 
     to_run = []
@@ -120,10 +123,12 @@ def main():
     if args.model in ("l2a", "both"):
         to_run.append(("l2a", cloudsen12_l2a_dataloader, "ms_cloudcam_1xdeepcross_attn_cloudsen12_l2a_best_val.pth"))
 
+    scene_split = not args.no_scene_split
     for flavor, dataloader_mod, ckpt_name in to_run:
         _, _, test_ds, _ = dataloader_mod.get_cloudsen12_datasets(
-            selected_bands, split_ratio=split_ratio, scene_split=True, seed=args.seed
+            selected_bands, split_ratio=split_ratio, scene_split=scene_split, seed=args.seed
         )
+        print(f"Test set: {len(test_ds)} records (scene_split={scene_split}, split_ratio={split_ratio})")
         test_loader = DataLoader(test_ds, batch_size=8, shuffle=False, num_workers=4)
         ckpt_path = os.path.join(results_dir, ckpt_name)
         if not os.path.isfile(ckpt_path):

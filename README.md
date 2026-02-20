@@ -31,6 +31,18 @@ python scripts/conditioned_results.py
 - `outputs/stats/paired_bootstrap_ci.json` — paired bootstrap 95% CI for L2A − L1C (per-class and mIoU); optional `--per-scene` for scene-level bootstrap.
 - `outputs/analysis/conditioned_iou_by_cloud_fraction.csv` — mean IoU and Δ by cloud-fraction bucket (if step 4 ran).
 
+## STAC vs index split (data grouping impact)
+
+Run both STAC-grouped and non-STAC (index) experiments with the same split ratio (0.85/0.05/0.1), then compare bootstrap results. L1C on GPU 4, L2A on GPU 5; STAC first, then index.
+
+```bash
+# From project root. Run in background so it survives disconnect:
+nohup bash scripts/run_stac_then_index_experiments.sh > run_experiments.log 2>&1 &
+tail -f run_experiments.log
+```
+
+Results: `src/results/stac/`, `src/results/index/` (checkpoints); `outputs/metrics/stac/`, `outputs/metrics/index/` (per-record IoU CSVs); `outputs/stats/paired_bootstrap_ci_stac.json`, `paired_bootstrap_ci_index.json`. Use `--run-name stac` or `--run-name index` with the same split/scene_split when running training or scripts manually.
+
 ## Other scripts
 
 - `scripts/verify_scene_split.py` — check STAC-group split (scenes, patches, no overlap).
