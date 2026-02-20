@@ -16,5 +16,6 @@ data/raw/
 data/processed/
 data/
 work_dirs/
-src/results/*.pth
-results/*.pth*.pth
+
+# PyTorch model checkpoints
+
