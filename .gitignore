@@ -18,4 +18,6 @@ data/
 work_dirs/
 
 # PyTorch model checkpoints
-
+*.pth
+src/results/**/*.pth
+results/**/*.pth
